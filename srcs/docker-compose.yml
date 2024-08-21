@@ -1,0 +1,89 @@
+
+services:
+  nginx:
+    container_name: nginx
+    networks:
+      - inception
+    depends_on:
+      - wordpress
+    env_file:
+      - .env
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress:/var/www/wordpress
+    restart: on-failure
+
+  mariadb:
+    container_name: mariadb
+    env_file:
+      - .env
+    networks:
+      - inception
+    secrets:
+      - db_root_password
+      - db_password
+    # healthcheck:
+    #   test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+    #   interval: 20s
+    #   timeout: 10s
+    #   retries: 10
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    volumes:
+      - mariadb:/var/lib/mysql
+    restart: on-failure
+    expose:
+      - "3306"
+
+  wordpress:
+    container_name: wordpress
+    env_file:
+      - .env
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+    secrets:
+      - credentials
+      - db_password
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    volumes:
+      - wordpress:/var/www/wordpress
+    restart: on-failure
+    expose:
+      - "9000"
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
+  credentials:
+    file: ../secrets/credentials.txt
+  ftp_password:
+    file: ../secrets/ftp_password.txt
+
+volumes:
+  mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: /home/vengence/Desktop/data/mariadb
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: /home/vengence/Desktop/data/wordpress
+
+networks:
+  inception:
+    driver: bridge
