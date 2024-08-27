@@ -1,11 +1,9 @@
 FROM debian:bookworm
 
-# Install MariaDB
 
 RUN apt-get clean && apt-get update -m -y && apt-get install -y mariadb-server mariadb-client
 
-# Copy the script that will create the database and the user
-COPY script.sh /etc/script.sh
+COPY conf/script.sh /etc/script.sh
 
 RUN chmod 777 /etc/script.sh && \
 	mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld && chmod 777 /run/mysqld
@@ -14,5 +12,4 @@ EXPOSE 3306
 
 ENTRYPOINT ["bash" , "/etc/script.sh"]
 
-# Set command to start MariaDB server
 CMD [ "mariadbd" , "--user=root" , "--bind-address=0.0.0.0" , "--port=3306" , "--verbose" ]

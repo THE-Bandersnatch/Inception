@@ -10,10 +10,9 @@ RUN apk --no-cache add nginx && \
     mkdir -p /run/nginx && \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt -subj "/C=MO/L=MED/O=1337/OU=student/CN=$DOMAIN_NAME"
 
-RUN mkdir -p /var/www/wordpress && \
-	chmod 777 /var/www/wordpress
+RUN mkdir -p /var/www/wordpress && chmod 777 /var/www/wordpress
 
-COPY /run/config.conf /etc/nginx/nginx.conf
+COPY /conf/config.conf /etc/nginx/nginx.conf
 
 HEALTHCHECK --start-period=10s --timeout=10s --interval=10s --retries=3 CMD ["pidof", "nginx"]
 

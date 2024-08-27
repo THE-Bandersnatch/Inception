@@ -1,6 +1,6 @@
 FROM debian:bookworm
 
-COPY /script.sh /etc/script.sh
+COPY conf/script.sh /etc/script.sh
 
 RUN apt update -y && \
 	apt install php8.2 php8.2-fpm \ 
