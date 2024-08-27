@@ -70,13 +70,13 @@ volumes:
     driver_opts:
       type: none
       o: 'bind'
-      device: /home/khaimer/Desktop/data/mariadb
+      device: /home/khaimer/data/mariadb
   wordpress:
     driver: local
     driver_opts:
       type: none
       o: 'bind'
-      device: /home/khaimer/Desktop/data/wordpress
+      device: /home/khaimer/data/wordpress
 
 networks:
   inception:
